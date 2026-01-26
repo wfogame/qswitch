@@ -65,8 +65,9 @@ func ApplyFlavour(flavour string, config Config) {
 
 	// start new one
 	if flavour == "dms" {
-		cmd := exec.Command("dms", "run", "-d")
-		cmd.Start()
+		exec.Command("dms", "run", "-d").Run()
+	} else if flavour == "ambxst" {
+		exec.Command("ambxst").Run()
 	} else {
 		cmd := exec.Command("qs", "-c", flavour)
 		cmd.Start()
