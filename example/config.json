@@ -1,5 +1,5 @@
 {
-  "flavours": ["ii", "xenon", "caelestia", "dms"],
+  "flavours": ["ii", "xenon", "Ambxst", "caelestia", "dms"],
   "keybinds": {
     "caelestia": "caelestia.lua",
     "ii": "default",
