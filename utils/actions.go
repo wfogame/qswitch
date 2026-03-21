@@ -58,25 +58,23 @@ func ApplyKeybinds(flavour string, config Config) {
 	}
 }
 
-func ApplyFlavour(flavour string, config Config) {
-	// kill old qs
+func ApplyFlavour(target string, config Config) {
 	exec.Command("pkill", "-x", "qs").Run()
 	exec.Command("caelestia", "shell", "-k").Run()
 	exec.Command("whisker", "shell", "stop").Run()
 
-	// start new one
-	if flavour == "dms" {
+	if target == "dms" {
 		exec.Command("dms", "run", "-d").Run()
-	} else if flavour == "Ambxst" {
+	} else if target == "Ambxst" {
 		exec.Command("ambxst").Run()
-	} else if flavour == "whisker" {
+	} else if target == "whisker" {
 		exec.Command("whisker","shell").Run()
 	} else {
-		cmd := exec.Command("qs", "-c", flavour)
+		cmd := exec.Command("qs", "-c", target)
 		cmd.Start()
 	}
 
-	ApplyKeybinds(flavour, config)
+	ApplyKeybinds(target, config)
 	exec.Command("hyprctl", "reload").Run()
 }
 
