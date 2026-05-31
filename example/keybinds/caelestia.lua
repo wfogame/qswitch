@@ -2,7 +2,6 @@
 
 
 hl.bind("SUPER + Tab", hl.dsp.global("caelestia:launcher"))
-hl.bind("SUPER + catchall", hl.dsp.global("caelestia:launcherInterrupt"))
 hl.bind("SUPER + mouse:272", hl.dsp.global("caelestia:launcherInterrupt"))
 hl.bind("SUPER + mouse:273", hl.dsp.global("caelestia:launcherInterrupt"))
 hl.bind("SUPER + mouse:274", hl.dsp.global("caelestia:launcherInterrupt"))
