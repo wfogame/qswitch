@@ -160,7 +160,7 @@ This will:
 1. Create necessary directories (`~/.config/qswitch`, `~/.cache/qswitch`)
 2. Create the state file `~/.switch_state`
 3. Generate a default `~/.config/qswitch/config.json`
-4. Append `source=~/.cache/qswitch/qswitch.lua` to your `~/.config/hypr/hyprland.lua` (if not already present)
+4. Append `dofile("/home/mannu/.cache/qswitch/qswitch.lua")` to your `~/.config/hypr/hyprland.lua` (if not already present)
 5. Remove any incorrect source lines (e.g., from old cache paths)
 
 You can force the setup (even if files exist) with:
@@ -235,7 +235,7 @@ Configuration is stored in `~/.config/qswitch/config.json`. Here's an example:
 - **`flavours`**: Array of available QuickShell flavours
 - **`unbinds`** _(Optional)_: Boolean. If `true`, sources `~/.config/qswitch/keybinds/unbinds.lua` before applying flavour-specific keybinds (except for "default" flavour). Useful for unbinding conflicting keys
 - **`keybinds`**: Object mapping each flavour to a keybind file in `~/.config/qswitch/keybinds/`. Use `"default"` for the base configuration
-- **`panel_keybind`** _(Optional)_: The keybind to open the QuickSwitch panel. Defaults to `"Super+Alt, P"`
+- **`panel_keybind`** _(Optional)_: The keybind to open the QuickSwitch panel. Defaults to `"Super+Alt+P"`
 
 Keybind files (e.g., `caelestia.lua`) contain Hyprland keybind definitions.
 
