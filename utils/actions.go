@@ -22,7 +22,7 @@ func ApplyKeybinds(flavour string, config Config) {
 	var contentParts []string
 
 	// Check for unbinds if enabled
-	if config.Unbinds && config.Keybinds[flavour] != "default" {
+	if config.Unbinds && config.Keybinds[flavour] != "default" && config.Keybinds[flavour] != "" {
 		unbindsPath := filepath.Join(
 			os.Getenv("HOME"),
 			".config",
@@ -30,7 +30,7 @@ func ApplyKeybinds(flavour string, config Config) {
 			"keybinds",
 			"unbinds.lua",
 		)
-		if _, err := os.Stat(unbindsPath); err == nil {
+		if info, err := os.Stat(unbindsPath); err == nil && !info.IsDir() {
 			contentParts = append(contentParts, "dofile(\""+unbindsPath+"\")")
 		} else {
 			fmt.Printf("Warning: unbinds.lua not found at %s\n", unbindsPath)
@@ -38,11 +38,11 @@ func ApplyKeybinds(flavour string, config Config) {
 	}
 
 	// Add flavour keybinds
-	if config.Keybinds[flavour] == "default" {
-		contentParts = append(contentParts, "# Default")
+	if config.Keybinds[flavour] == "default" || config.Keybinds[flavour] == "" {
+		contentParts = append(contentParts, "-- Default")
 	} else {
 		keybindPath := filepath.Join(os.Getenv("HOME"), ".config", "qswitch", "keybinds", config.Keybinds[flavour])
-		if _, err := os.Stat(keybindPath); err == nil {
+		if info, err := os.Stat(keybindPath); err == nil && !info.IsDir() {
 			contentParts = append(contentParts, "dofile(\""+keybindPath+"\")")
 		} else {
 			fmt.Printf("Warning: keybind file %s not found for flavour %s\n", config.Keybinds[flavour], flavour)
