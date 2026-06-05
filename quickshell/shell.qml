@@ -31,7 +31,7 @@ Scope {
         "noctalia-shell": "#a9aefe",
         "dms": "#D0BCFF",
         "xenon": "#cba6f7",
-        "Ambxst": "#E37363",
+        "ambxst": "#E37363",
         "whisker": "#ffffff",
         "ocean": "#94e2d5",
         "nucleus-shell": "#a569bb"
@@ -44,7 +44,7 @@ Scope {
         "caelestia": "caelestia.svg",
         "xenon": "xenon.svg",
         "dms": "dms.svg",
-        "Ambxst": "ambxst.png",
+        "ambxst": "ambxst.png",
         "whisker": "whisker.png",
         "nucleus-shell": "nucleus.png"
     }

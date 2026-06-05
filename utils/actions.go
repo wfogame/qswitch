@@ -21,8 +21,11 @@ func ApplyKeybinds(flavour string, config Config) {
 
 	var contentParts []string
 
+	flavourName := filepath.Base(flavour)
+
+	contentParts = append(contentParts, "hl.bind(\"" + config.PanelKeybind + "\", hl.dsp.exec_cmd(\"qswitch panel\"))")
 	// Check for unbinds if enabled
-	if config.Unbinds && config.Keybinds[flavour] != "default" && config.Keybinds[flavour] != "" {
+	if config.Unbinds && config.Keybinds[flavourName] != "default" && config.Keybinds[flavourName] != "" {
 		unbindsPath := filepath.Join(
 			os.Getenv("HOME"),
 			".config",
@@ -38,21 +41,21 @@ func ApplyKeybinds(flavour string, config Config) {
 	}
 
 	// Add flavour keybinds
-	if config.Keybinds[flavour] == "default" || config.Keybinds[flavour] == "" {
+	if config.Keybinds[flavourName] == "default" {
 		contentParts = append(contentParts, "-- Default")
 	} else {
-		keybindPath := filepath.Join(os.Getenv("HOME"), ".config", "qswitch", "keybinds", config.Keybinds[flavour])
+		keybindPath := filepath.Join(os.Getenv("HOME"), ".config", "qswitch", "keybinds", config.Keybinds[flavourName])
 		if info, err := os.Stat(keybindPath); err == nil && !info.IsDir() {
 			contentParts = append(contentParts, "dofile(\""+keybindPath+"\")")
 		} else {
-			fmt.Printf("Warning: keybind file %s not found for flavour %s\n", config.Keybinds[flavour], flavour)
+			fmt.Printf("Warning: keybind file %s not found or is a directory for flavour %s\n", config.Keybinds[flavourName], flavourName)
 		}
 	}
 
-	// Add QuickSwitchPanel keybind
-	contentParts = append(contentParts, "hl.bind(\"" + config.PanelKeybind + "\", hl.dsp.exec_cmd(\"qswitch panel\"))")
-
 	content := strings.Join(contentParts, "\n")
+	fmt.Printf("DEBUG: ApplyKeybinds called with flavour='%s', extracted flavourName='%s'\n", flavour, flavourName)
+	fmt.Printf("DEBUG: config.Keybinds[flavourName] is '%s'\n", config.Keybinds[flavourName])
+	fmt.Printf("DEBUG: Final content to write:\n%s\n", content)
 	if err := os.WriteFile(keybindsFile, []byte(content), 0644); err != nil {
 		fmt.Printf("Error writing keybinds file: %v\n", err)
 	}
@@ -65,10 +68,11 @@ func ApplyFlavour(target string, config Config) {
 
 	if target == "dms" {
 		exec.Command("dms", "run", "-d").Run()
-	} else if target == "Ambxst" {
-		exec.Command("ambxst").Run()
+	} else if strings.ToLower(target) == "ambxst" {
+		cmd := exec.Command("ambxst")
+		cmd.Start()
 	} else if target == "whisker" {
-		exec.Command("whisker","shell").Run()
+		exec.Command("whisker", "shell").Run()
 	} else {
 		cmd := exec.Command("qs", "-c", target)
 		cmd.Start()

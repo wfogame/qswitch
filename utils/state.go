@@ -30,6 +30,12 @@ func GetFlavourPath(flavour string) (string, bool) {
 			return "", false
 		}
 		return flavour, true
+	} else if strings.ToLower(flavour) == "ambxst" {
+		_, err := exec.LookPath("ambxst")
+		if err != nil {
+			return "", false
+		}
+		return flavour, true
 	}
 
 	roots := []string{
