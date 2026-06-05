@@ -27,26 +27,32 @@ Scope {
     property color cYellow: "#f9e2af"
     property var flavourColors: {
         "ii": "#51debd",
-        "caelestia": "#a6e3a1",
+        "caelestia": "#49433b",
         "noctalia-shell": "#a9aefe",
         "dms": "#D0BCFF",
         "xenon": "#cba6f7",
-        "ocean": "#94e2d5"
+        "Ambxst": "#E37363",
+        "whisker": "#ffffff",
+        "ocean": "#94e2d5",
+        "nucleus-shell": "#a569bb"
     }
     property color defaultFlavourColor: "#b4befe"
     property string iconsBasePath: Quickshell.shellPath("icons/")
     property var flavourIcons: {
         "ii": "ii.svg",
         "noctalia-shell": "noctalia.svg",
-        "caelestia": "pacman.svg",
+        "caelestia": "caelestia.svg",
         "xenon": "xenon.svg",
-        "dms": "dms.svg"
+        "dms": "dms.svg",
+        "Ambxst": "ambxst.png",
+        "whisker": "whisker.png",
+        "nucleus-shell": "nucleus.png"
     }
     property string currentFlavour: ""
     property var flavourInstallStatus: ({
     })
     property bool showInfoPopup: false
-    property bool useGrid: false
+    property bool useGrid: true
 
     function setFlavour(flavour) {
         switcher.command = ["qswitch", "apply", flavour];

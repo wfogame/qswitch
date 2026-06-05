@@ -22,7 +22,7 @@ func ApplyKeybinds(flavour string, config Config) {
 	var contentParts []string
 
 	// Check for unbinds if enabled
-	if config.Unbinds && config.Keybinds[flavour] != "default" {
+	if config.Unbinds && config.Keybinds[flavour] != "default" && config.Keybinds[flavour] != "" {
 		unbindsPath := filepath.Join(
 			os.Getenv("HOME"),
 			".config",
@@ -30,7 +30,7 @@ func ApplyKeybinds(flavour string, config Config) {
 			"keybinds",
 			"unbinds.lua",
 		)
-		if _, err := os.Stat(unbindsPath); err == nil {
+		if info, err := os.Stat(unbindsPath); err == nil && !info.IsDir() {
 			contentParts = append(contentParts, "dofile(\""+unbindsPath+"\")")
 		} else {
 			fmt.Printf("Warning: unbinds.lua not found at %s\n", unbindsPath)
@@ -38,11 +38,11 @@ func ApplyKeybinds(flavour string, config Config) {
 	}
 
 	// Add flavour keybinds
-	if config.Keybinds[flavour] == "default" {
-		contentParts = append(contentParts, "# Default")
+	if config.Keybinds[flavour] == "default" || config.Keybinds[flavour] == "" {
+		contentParts = append(contentParts, "-- Default")
 	} else {
 		keybindPath := filepath.Join(os.Getenv("HOME"), ".config", "qswitch", "keybinds", config.Keybinds[flavour])
-		if _, err := os.Stat(keybindPath); err == nil {
+		if info, err := os.Stat(keybindPath); err == nil && !info.IsDir() {
 			contentParts = append(contentParts, "dofile(\""+keybindPath+"\")")
 		} else {
 			fmt.Printf("Warning: keybind file %s not found for flavour %s\n", config.Keybinds[flavour], flavour)
@@ -58,21 +58,23 @@ func ApplyKeybinds(flavour string, config Config) {
 	}
 }
 
-func ApplyFlavour(flavour string, config Config) {
-	// kill old qs
+func ApplyFlavour(target string, config Config) {
 	exec.Command("pkill", "-x", "qs").Run()
 	exec.Command("caelestia", "shell", "-k").Run()
+	exec.Command("whisker", "shell", "stop").Run()
 
-	// start new one
-	if flavour == "dms" {
-		cmd := exec.Command("dms", "run", "-d")
-		cmd.Start()
+	if target == "dms" {
+		exec.Command("dms", "run", "-d").Run()
+	} else if target == "Ambxst" {
+		exec.Command("ambxst").Run()
+	} else if target == "whisker" {
+		exec.Command("whisker","shell").Run()
 	} else {
-		cmd := exec.Command("qs", "-c", flavour)
+		cmd := exec.Command("qs", "-c", target)
 		cmd.Start()
 	}
 
-	ApplyKeybinds(flavour, config)
+	ApplyKeybinds(target, config)
 	exec.Command("hyprctl", "reload").Run()
 }
 
