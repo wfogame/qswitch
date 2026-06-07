@@ -24,7 +24,7 @@ var switchKeybindsCmd = &cobra.Command{
 			fmt.Println("Unknown flavour:", flavour)
 			return
 		}
-		utils.ApplyKeybinds(flavour, config)
+		utils.ApplyKeybinds(flavour, config, false)
 		fmt.Println("Switched keybinds to", flavour)
 	},
 }

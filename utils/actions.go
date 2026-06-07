@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func ApplyKeybinds(flavour string, config Config) {
+func ApplyKeybinds(flavour string, config Config, debug bool) {
 	// Handle keybinds
 	qswitchDir := filepath.Join(os.Getenv("HOME"), ".config", "qswitch")
 	qswitchCacheDir := filepath.Join(os.Getenv("HOME"), ".cache", "qswitch")
@@ -53,32 +53,39 @@ func ApplyKeybinds(flavour string, config Config) {
 	}
 
 	content := strings.Join(contentParts, "\n")
-	fmt.Printf("DEBUG: ApplyKeybinds called with flavour='%s', extracted flavourName='%s'\n", flavour, flavourName)
-	fmt.Printf("DEBUG: config.Keybinds[flavourName] is '%s'\n", config.Keybinds[flavourName])
-	fmt.Printf("DEBUG: Final content to write:\n%s\n", content)
+	Debug(debug, "ApplyKeybinds called with flavour='%s', extracted flavourName='%s'", flavour, flavourName)
+	Debug(debug, "config.Keybinds[flavourName] is '%s'", config.Keybinds[flavourName])
+	Debug(debug, "Final content to write:\n%s", content)
 	if err := os.WriteFile(keybindsFile, []byte(content), 0644); err != nil {
 		fmt.Printf("Error writing keybinds file: %v\n", err)
 	}
 }
 
-func ApplyFlavour(target string, config Config) {
+func ApplyFlavour(target string, config Config, debug bool) {
+	Debug(debug, "Stopping previous instances (qs, caelestia, whisker)...")
 	exec.Command("pkill", "-x", "qs").Run()
 	exec.Command("caelestia", "shell", "-k").Run()
 	exec.Command("whisker", "shell", "stop").Run()
 
 	if target == "dms" {
+		Debug(debug, "Starting dms...")
 		exec.Command("dms", "run", "-d").Run()
 	} else if strings.ToLower(target) == "ambxst" {
+		Debug(debug, "Starting ambxst...")
 		cmd := exec.Command("ambxst")
 		cmd.Start()
 	} else if target == "whisker" {
+		Debug(debug, "Starting whisker shell...")
 		exec.Command("whisker", "shell").Run()
 	} else {
+		Debug(debug, "Starting qs with target: %s...", target)
 		cmd := exec.Command("qs", "-c", target)
 		cmd.Start()
 	}
 
-	ApplyKeybinds(target, config)
+	Debug(debug, "Applying keybinds...")
+	ApplyKeybinds(target, config, debug)
+	Debug(debug, "Reloading hyprland...")
 	exec.Command("hyprctl", "reload").Run()
 }
 
@@ -125,7 +132,7 @@ func Cycle(config Config) {
 
 	if current == "" {
 		WriteState(firstInstalled)
-		ApplyFlavour(firstInstalled, config)
+		ApplyFlavour(firstInstalled, config, false)
 		fmt.Println("Switched to", firstInstalled)
 		return
 	}
@@ -142,7 +149,7 @@ func Cycle(config Config) {
 	if currentIdx == -1 {
 		// Current not found, use first installed
 		WriteState(firstInstalled)
-		ApplyFlavour(firstInstalled, config)
+		ApplyFlavour(firstInstalled, config, false)
 		fmt.Println("Switched to", firstInstalled)
 		return
 	}
@@ -153,7 +160,7 @@ func Cycle(config Config) {
 		next := config.Flavours[nextIdx]
 		if IsFlavourInstalled(next) {
 			WriteState(next)
-			ApplyFlavour(next, config)
+			ApplyFlavour(next, config, false)
 			fmt.Println("Switched to", next)
 			return
 		}

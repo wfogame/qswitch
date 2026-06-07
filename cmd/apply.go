@@ -15,6 +15,7 @@ var applyCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		config := utils.LoadConfig()
 		currentFlag, _ := cmd.Flags().GetBool("current")
+		debugFlag, _ := cmd.Flags().GetBool("debug")
 
 		if currentFlag {
 			currentFlavour := utils.ReadState()
@@ -34,7 +35,7 @@ var applyCmd = &cobra.Command{
 				return
 			}
 
-			utils.ApplyFlavour(currentFlavour, config)
+			utils.ApplyFlavour(currentFlavour, config, debugFlag)
 			fmt.Println("Applied current flavour:", currentFlavour)
 			return
 		}
@@ -66,7 +67,7 @@ var applyCmd = &cobra.Command{
 		}
 
 		utils.WriteState(flavour)
-		utils.ApplyFlavour(path, config)
+		utils.ApplyFlavour(path, config, debugFlag)
 		fmt.Println("Switched to", flavour)
 	},
 }
@@ -74,4 +75,5 @@ var applyCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(applyCmd)
 	applyCmd.Flags().Bool("current", false, "Apply the current flavour")
+	applyCmd.Flags().BoolP("debug", "d", false, "Print debug output")
 }

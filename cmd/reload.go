@@ -19,7 +19,7 @@ var reloadCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		config := utils.LoadConfig()
 		current := utils.ReadState()
-		utils.ApplyKeybinds(current, config)
+		utils.ApplyKeybinds(current, config, false)
 		fmt.Println("Config Reloaded")
 	},
 }
